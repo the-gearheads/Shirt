@@ -11,9 +11,11 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.controllers.Controllers;
 
+@Logged
 public class Drive extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
 
@@ -43,8 +45,9 @@ public class Drive extends SubsystemBase {
     double rightOut = forward - turn;
 
     // Set motor output
-    leftLeader.setControl(leftRequest.withOutput(leftOut));
-    rightLeader.setControl(rightRequest.withOutput(rightOut));
+    leftLeader.setControl(leftRequest.withOutput(leftOut * 0.8));
+rightLeader.setControl(rightRequest.withOutput(rightOut * 0.8));
+
   }
 
   @Override

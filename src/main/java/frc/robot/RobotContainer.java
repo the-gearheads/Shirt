@@ -6,19 +6,35 @@ package frc.robot;
 
 import frc.robot.controllers.Controllers;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Pivot;
+import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 
 public class RobotContainer {
 
   Drive drive = new Drive();
+  Pivot pivot = new Pivot();
+  Shooter shooter = new Shooter();
+  SendableChooser<Command> sysidChooser;
+
   public RobotContainer() {
     // Configure the trigger bindings
+    sysidChooser = new SendableChooser<>();
+    sysidChooser.addOption("Pivot Quasi Forward", pivot.getSysidRoutine().quasistatic(Direction.kForward));
+    sysidChooser.addOption("Pivot Quasi Reverse", pivot.getSysidRoutine().quasistatic(Direction.kReverse));
+    sysidChooser.addOption("Pivot Dynamic Forward", pivot.getSysidRoutine().dynamic(Direction.kForward));
+    sysidChooser.addOption("Pivot Dynamic Reverse", pivot.getSysidRoutine().dynamic(Direction.kReverse));
+    SmartDashboard.putData(sysidChooser);
     configureBindings();
+
   }
 
   /**
@@ -40,15 +56,25 @@ public class RobotContainer {
     // Find new controllers
     Controllers.updateActiveControllerInstance();
 
+    Controllers.driverController.getXBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(1);}, shooter));
+    Controllers.driverController.getXBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
+
+
+    Controllers.driverController.getYBtn().onTrue(Commands.runOnce(() -> {pivot.setVoltage(4);}, pivot));
+    Controllers.driverController.getBBtn().onTrue(Commands.runOnce(() -> {pivot.setVoltage(-4);}, pivot));
+
+    Controllers.driverController.getYBtn().onFalse(Commands.runOnce(() -> {pivot.setVoltage(0);}, pivot));
+    Controllers.driverController.getBBtn().onFalse(Commands.runOnce(() -> {pivot.setVoltage(0);}, pivot));
+
+
+
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Commands.runOnce(() -> {System.out.println("bruh");});
+    // return Commands.runOnce(() -> {System.out.println("bruh");});
+    return sysidChooser.getSelected();
+    // return shooter.run(() -> {shooter.setOutput(1);});
   }
 }
