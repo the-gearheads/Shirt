@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // Controllers.driverController.getYBtn().onTrue(Commands.runEnd(()->{shooter.setControl(shooterOut.withOutput(1));}, ()->{shooter.setControl(shooterOut.withOutput(0));}, this));
-    shooter.setControl(shooterOut.withOutput(-output * 0.75ccccvv));
+    shooter.setControl(shooterOut.withOutput(-output));
   }
 
   public void configure() {

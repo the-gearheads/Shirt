@@ -56,18 +56,21 @@ public class RobotContainer {
     // Find new controllers
     Controllers.updateActiveControllerInstance();
 
-    Controllers.driverController.getXBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(1);}, shooter));
+    Controllers.driverController.getYBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(1);}, shooter));
+    Controllers.driverController.getYBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
+    Controllers.driverController.getBBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.75);}, shooter));
+    Controllers.driverController.getBBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
+    Controllers.driverController.getXBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.5);}, shooter));
     Controllers.driverController.getXBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
+    Controllers.driverController.getABtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.25);}, shooter));
+    Controllers.driverController.getABtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
 
 
-    Controllers.driverController.getYBtn().onTrue(Commands.runOnce(() -> {pivot.setVoltage(4);}, pivot));
-    Controllers.driverController.getBBtn().onTrue(Commands.runOnce(() -> {pivot.setVoltage(-4);}, pivot));
+    Controllers.driverController.getPovUp().onTrue(Commands.runOnce(() -> {pivot.setVoltage(4);}, pivot));
+    Controllers.driverController.getPovDown().onTrue(Commands.runOnce(() -> {pivot.setVoltage(-4);}, pivot));
 
-    Controllers.driverController.getYBtn().onFalse(Commands.runOnce(() -> {pivot.setVoltage(0);}, pivot));
-    Controllers.driverController.getBBtn().onFalse(Commands.runOnce(() -> {pivot.setVoltage(0);}, pivot));
-
-
-
+    Controllers.driverController.getPovUp().onFalse(Commands.runOnce(() -> {pivot.setVoltage(0);}, pivot));
+    Controllers.driverController.getPovDown().onFalse(Commands.runOnce(() -> {pivot.setVoltage(0);}, pivot));
   }
 
 
