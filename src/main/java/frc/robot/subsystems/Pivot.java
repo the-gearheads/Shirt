@@ -83,13 +83,13 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Pivot/absAngle", getAbsAngle().getRadians());
     SmartDashboard.putNumber("Pivot/relAngle", getRelAngle().getRadians());
 
-    if (manualVoltage > 0 && getAbsAngle().getRadians() > MAX_ANGLE.getRadians()) {
-      manualVoltage = 0;
-    }
+    // if (manualVoltage > 0 && getAbsAngle().getRadians() > MAX_ANGLE.getRadians()) {
+    //   manualVoltage = 0;
+    // }
 
-    if (manualVoltage < 0 && getAbsAngle().getRadians() < MIN_ANGLE.getRadians()) {
-      manualVoltage = 0;
-    }
+    // if (manualVoltage < 0 && getAbsAngle().getRadians() < MIN_ANGLE.getRadians()) {
+    //   manualVoltage = 0;
+    // }
 
     setMotorVoltage(manualVoltage);
     // SmartDashboard.putNumber("Pivot/getGoal", getGoal().getRadians());
@@ -106,7 +106,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public Rotation2d getAbsAngle() {
-    return new Rotation2d((PIVOT_ABS_ENCODER_OFFSET + Units.rotationsToRadians(absEncoder.getPosition())) % (2 * Math.PI));
+    return Rotation2d.fromRotations(absEncoder.getPosition());
   }
 
   public Rotation2d getRelAngle() {
