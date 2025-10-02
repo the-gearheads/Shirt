@@ -40,13 +40,15 @@ public class Drive extends SubsystemBase {
     double forward = Controllers.driverController.getTranslate();
     double turn = -Controllers.driverController.getRotateAxis();
 
+    double speed = Math.signum(forward) * Math.pow(forward, 2.5);
+    double rot = Math.signum(turn) * Math.pow(turn, 2.5);
     // Arcade drive logic
-    double leftOut = forward + turn;
-    double rightOut = forward - turn;
+    double leftOut = speed + rot;
+    double rightOut = speed - rot;
 
     // Set motor output
     leftLeader.setControl(leftRequest.withOutput(leftOut * 0.8));
-rightLeader.setControl(rightRequest.withOutput(rightOut * 0.8));
+    rightLeader.setControl(rightRequest.withOutput(rightOut * 0.8));
 
   }
 
