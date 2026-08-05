@@ -42,9 +42,9 @@ public class Pivot extends SubsystemBase {
   public Pivot() {
     configure();
     syncIntegratedEncoder();
-    pid.reset(getRelAngle().getRadians());
-    pid.setGoal(getRelAngle().getRadians());
-    pid.setTolerance(ANGLE_TOLERANCE.getRadians());
+    // pid.reset(getRelAngle().getRadians());
+    // pid.setGoal(getRelAngle().getRadians());
+    // pid.setTolerance(ANGLE_TOLERANCE.getRadians());
   }
 
   @Override
@@ -54,32 +54,32 @@ public class Pivot extends SubsystemBase {
       syncIntegratedEncoder();
     }
    
-    double pidOutput = 0, ff = 0;
-    // https://gist.github.com/person4268/46710dca9a128a0eb5fbd93029627a6b
-    if (Math.abs(Units.radiansToDegrees(
-        getRelAngle().getRadians() - pid.getSetpoint().position)) > PIVOT_ANGLE_LIVE_FF_THRESHOLD) {
-      ff = pivotFeedforward.calculate(getRelAngle().getRadians(), pid.getSetpoint().velocity);
-    } else {
-      ff = pivotFeedforward.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity);
-    }
+    // double pidOutput = 0, ff = 0;
+    // // https://gist.github.com/person4268/46710dca9a128a0eb5fbd93029627a6b
+    // if (Math.abs(Units.radiansToDegrees(
+    //     getRelAngle().getRadians() - pid.getSetpoint().position)) > PIVOT_ANGLE_LIVE_FF_THRESHOLD) {
+    //   ff = pivotFeedforward.calculate(getRelAngle().getRadians(), pid.getSetpoint().velocity);
+    // } else {
+    //   ff = pivotFeedforward.calculate(pid.getSetpoint().position, pid.getSetpoint().velocity);
+    // }
 
-    pidOutput = pid.calculate(getRelAngle().getRadians());
+    // pidOutput = pid.calculate(getRelAngle().getRadians());
     
-    double output = pidOutput + ff;
+    // double output = pidOutput + ff;
 
-    if (output > 0 && getAbsAngle().getRadians() > MAX_ANGLE.getRadians()) {
-      output = 0;
-    }
+    // if (output > 0 && getAbsAngle().getRadians() > MAX_ANGLE.getRadians()) {
+    //   output = 0;
+    // }
 
-    if (output < 0 && getAbsAngle().getRadians() < MIN_ANGLE.getRadians()) {
-      output = 0;
-    }
+    // if (output < 0 && getAbsAngle().getRadians() < MIN_ANGLE.getRadians()) {
+    //   output = 0;
+    // }
 
-    if (pid.getGoal().position < MIN_ANGLE.getRadians() || pid.getGoal().position > MAX_ANGLE.getRadians()) {
-      pid.setGoal(MathUtil.clamp(pid.getGoal().position, MIN_ANGLE.getRadians(), MAX_ANGLE.getRadians()));
-    }
+    // if (pid.getGoal().position < MIN_ANGLE.getRadians() || pid.getGoal().position > MAX_ANGLE.getRadians()) {
+    //   pid.setGoal(MathUtil.clamp(pid.getGoal().position, MIN_ANGLE.getRadians(), MAX_ANGLE.getRadians()));
+    // }
 
-    setMotorVoltage(output);
+    // setMotorVoltage(output);
 
     SmartDashboard.putNumber("Pivot/absAngle", getAbsAngle().getRadians());
     SmartDashboard.putNumber("Pivot/relAngle", getRelAngle().getRadians());
@@ -92,7 +92,7 @@ public class Pivot extends SubsystemBase {
     //   manualVoltage = 0;
     // }
 
-    // setMotorVoltage(manualVoltage);
+    setMotorVoltage(manualVoltage);
     // SmartDashboard.putNumber("Pivot/getGoal", getGoal().getRadians());
   }
 
@@ -103,7 +103,7 @@ public class Pivot extends SubsystemBase {
     pivotConfig.encoder.positionConversionFactor(POS_FACTOR);
     pivotConfig.encoder.velocityConversionFactor(VEL_FACTOR);
 
-    pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    pivotMotor.configure(pivotConfig, com.revrobotics.ResetMode.kResetSafeParameters, com.revrobotics.PersistMode.kPersistParameters);
   }
 
   public Rotation2d getAbsAngle() {

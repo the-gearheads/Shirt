@@ -58,10 +58,13 @@ public class RobotContainer {
 
     Controllers.driverController.getYBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(1);}, shooter));
     Controllers.driverController.getYBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
+
     Controllers.driverController.getBBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.75);}, shooter));
     Controllers.driverController.getBBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
+
     Controllers.driverController.getXBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.5);}, shooter));
     Controllers.driverController.getXBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
+    
     Controllers.driverController.getABtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.25);}, shooter));
     Controllers.driverController.getABtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
 
