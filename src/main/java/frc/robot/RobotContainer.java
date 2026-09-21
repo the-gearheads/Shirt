@@ -4,80 +4,68 @@
 
 package frc.robot;
 
-import frc.robot.controllers.Controllers;
-import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.Pivot;
-import frc.robot.subsystems.Shooter;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Drivebase;
+import frc.robot.subsystems.Shoot;
+import frc.robot.subsystems.Angler;
+//import edu.wpi.first.wpilibj2.command.Command;
+//import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Controllers.DriveController;
+//import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
+ */
 public class RobotContainer {
+  // The robot's subsystems and commands are defined here...
+  @SuppressWarnings("unused")
+  private final Drivebase Drivebase = new Drivebase();
+  private final Angler Angler = new Angler();
+  private final Shoot Shoot = new Shoot();
 
-  Drive drive = new Drive();
-  Pivot pivot = new Pivot();
-  Shooter shooter = new Shooter();
-  SendableChooser<Command> sysidChooser;
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  public final DriveController driverController =
+      new DriveController(OperatorConstants.kDriverControllerPort);
+    
+  
 
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
-    sysidChooser = new SendableChooser<>();
-    sysidChooser.addOption("Pivot Quasi Forward", pivot.getSysidRoutine().quasistatic(Direction.kForward));
-    sysidChooser.addOption("Pivot Quasi Reverse", pivot.getSysidRoutine().quasistatic(Direction.kReverse));
-    sysidChooser.addOption("Pivot Dynamic Forward", pivot.getSysidRoutine().dynamic(Direction.kForward));
-    sysidChooser.addOption("Pivot Dynamic Reverse", pivot.getSysidRoutine().dynamic(Direction.kReverse));
-    SmartDashboard.putData(sysidChooser);
     configureBindings();
-
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  public void configureBindings() {
-    if (!Controllers.didControllersChange())
-      return;
+  
+  private void configureBindings() {
+    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    DriveController.createDriveController();
     
-    // Clear buttons
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
-    // Find new controllers
-    Controllers.updateActiveControllerInstance();
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // cancelling on release.
+    driverController.povUp().onTrue(Angler.upCommand());
+    driverController.povDown().onTrue(Angler.downCommand());
 
-    Controllers.driverController.getYBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(1);}, shooter));
-    Controllers.driverController.getYBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
-    Controllers.driverController.getBBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.75);}, shooter));
-    Controllers.driverController.getBBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
-    Controllers.driverController.getXBtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.5);}, shooter));
-    Controllers.driverController.getXBtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
-    Controllers.driverController.getABtn().onTrue(Commands.runOnce(() -> {shooter.setOutput(0.25);}, shooter));
-    Controllers.driverController.getABtn().onFalse(Commands.runOnce(() -> {shooter.setOutput(0);}, shooter));
+    driverController.povUp().onFalse(Angler.stopCommand());
+    driverController.povDown().onFalse(Angler.stopCommand());
+    //YBXA
+    driverController.getYBtn().onTrue(Shoot.shootCommand(1.0));
+    driverController.getYBtn().onFalse(Shoot.shootCommand(0.0));
 
+    driverController.getBBtn().onTrue(Shoot.shootCommand(0.75));
+    driverController.getBBtn().onFalse(Shoot.shootCommand(0.0));
 
-    Controllers.driverController.getPovUp().onTrue(Commands.runOnce(() -> {pivot.setVoltage(4);}, pivot));
-    Controllers.driverController.getPovDown().onTrue(Commands.runOnce(() -> {pivot.setVoltage(-4);}, pivot));
+    driverController.getXBtn().onTrue(Shoot.shootCommand(0.5));
+    driverController.getXBtn().onFalse(Shoot.shootCommand(0.0));
 
-    Controllers.driverController.getPovUp().onFalse(Commands.runOnce(() -> {pivot.setVoltage(0);}, pivot));
-    Controllers.driverController.getPovDown().onFalse(Commands.runOnce(() -> {pivot.setVoltage(0);}, pivot));
+    driverController.getABtn().onTrue(Shoot.shootCommand(0.25));
+    driverController.getABtn().onFalse(Shoot.shootCommand(0.0));
+    
   }
 
-
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    // return Commands.runOnce(() -> {System.out.println("bruh");});
-    return sysidChooser.getSelected();
-    // return shooter.run(() -> {shooter.setOutput(1);});
-  }
 }
