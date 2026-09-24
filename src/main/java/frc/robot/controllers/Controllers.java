@@ -1,4 +1,4 @@
-package frc.robot.Controllers;
+package frc.robot.controllers;
 
 public class Controllers {
     
