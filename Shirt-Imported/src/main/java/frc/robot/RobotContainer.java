@@ -22,14 +22,16 @@ import frc.robot.Controllers.DriverController;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
+    public final DriverController driverController =
+      new DriverController(OperatorConstants.kDriverControllerPort);
+      
   @SuppressWarnings("unused")
   private final Drivebase Drivebase = new Drivebase();
   private final Angler Angler = new Angler();
   private final Shoot Shoot = new Shoot();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  public final DriverController driverController =
-      new DriverController(OperatorConstants.kDriverControllerPort);
+
     
   
 
