@@ -9,6 +9,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Drivebase;
 import frc.robot.subsystems.Shoot;
 import frc.robot.subsystems.Angler;
+import frc.robot.controllers.Controllers;
 //import edu.wpi.first.wpilibj2.command.Command;
 //import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.controllers.DriveController;
@@ -28,8 +29,8 @@ public class RobotContainer {
   private final Shoot Shoot = new Shoot();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  public final DriveController driverController =
-      new DriveController(OperatorConstants.kDriverControllerPort);
+
+  public DriveController driverController;
     
   
 
@@ -42,7 +43,8 @@ public class RobotContainer {
   
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    DriveController.createDriveController();
+    Controllers.updateActiveControllers();
+    driverController = Controllers.cDriveController;
     
     CommandScheduler.getInstance().getActiveButtonLoop().clear();
 
