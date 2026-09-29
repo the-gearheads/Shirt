@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.lang.ModuleLayer.Controller;
+
 //import java.nio.channels.Pipe.SourceChannel;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -16,6 +18,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 //import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.controllers.Controllers;
 //import edu.wpi.first.wpilibj2.command.Command;
 //import frc.robot.RobotContainer;
 import frc.robot.controllers.DriveController;
@@ -68,8 +71,8 @@ public class Drivebase extends SubsystemBase {
   @Override
   public void periodic() {
 
-    double forward = DriveController.driveController.getTranslate();
-    double turn = -DriveController.driveController.getRotation();
+    double forward = Controllers.cDriveController.getTranslate();
+    double turn = -Controllers.cDriveController.getRotation();
 
     double speed = Math.signum(forward)*Math.pow(forward, 4);
     double rot = Math.signum(turn)*Math.pow(turn, 4);

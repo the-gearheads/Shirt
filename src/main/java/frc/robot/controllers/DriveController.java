@@ -9,23 +9,24 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static edu.wpi.first.math.MathUtil.applyDeadband;
 
 public class DriveController extends Controllers {
+
     XboxController controller;
-    public static DriveController driveController;
-    public DriveController(int port){
-        if (port == -1){
+
+    public DriveController(int id){
+        if (id == -1){
             this.controller = null;
             return;
         }
-        this.controller = new XboxController(port);
+        this.controller = new XboxController(id);
 
     }
 
     public boolean isNull() {
-        return this.controller == null;
+        return controller == null;
     }
 
     public static void createDriveController(){
-        driveController = new DriveController(-1);
+        //this.controller = new DriveController(-1);
     }
 
     public static double deadband(double num){
